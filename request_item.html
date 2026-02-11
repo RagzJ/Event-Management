@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request Item</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); min-height: 100vh; padding: 20px; }
+        .navbar { background: white; padding: 20px 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar h2 { color: #2d3748; font-size: 24px; }
+        .back-btn { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #2d3748; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; }
+        .back-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(168, 237, 234, 0.4); }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .alert { background: #fed7d7; color: #c53030; padding: 15px 20px; border-radius: 10px; margin-bottom: 25px; animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+        .card h3 { color: #2d3748; font-size: 20px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #e2e8f0; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #2d3748; padding: 15px; text-align: left; font-weight: 600; font-size: 14px; }
+        td { padding: 15px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+        tr:hover { background: #f7fafc; }
+        .price { color: #48bb78; font-weight: 600; font-size: 16px; }
+        .quantity-badge { background: #bee3f8; color: #2c5282; padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: 600; }
+        .request-input { padding: 8px 12px; border: 2px solid #e2e8f0; border-radius: 6px; width: 80px; font-size: 14px; font-family: 'Poppins', sans-serif; }
+        .request-input:focus { outline: none; border-color: #a8edea; }
+        .request-btn { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; padding: 8px 20px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-left: 8px; }
+        .request-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4); }
+        @media (max-width: 768px) { .navbar { flex-direction: column; gap: 15px; } table { font-size: 12px; } th, td { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2>🛒 Request Item</h2>
+        <a href="/user/dashboard" class="back-btn">← Back to Dashboard</a>
+    </div>
+    
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="card">
+            <h3>Available Items</h3>
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Available</th>
+                        <th>Request</th>
+                    </tr>
+                    {% for item in items %}
+                    <tr>
+                        <form method="POST">
+                            <input type="hidden" name="item_id" value="{{ item.id }}">
+                            <td><strong>{{ item.item_name }}</strong></td>
+                            <td>{{ item.description }}</td>
+                            <td class="price">${{ item.price }}</td>
+                            <td><span class="quantity-badge">{{ item.quantity }} available</span></td>
+                            <td>
+                                <input type="number" name="quantity" min="1" max="{{ item.quantity }}" value="1" required class="request-input">
+                                <button type="submit" class="request-btn">Request</button>
+                            </td>
+                        </form>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
